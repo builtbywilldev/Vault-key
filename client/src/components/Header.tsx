@@ -19,17 +19,17 @@ export default function Header() {
         </div>
         
         <nav className="hidden md:flex items-center gap-6">
-          <Link href="/">
-            <a className="text-sm font-medium hover:text-primary transition-colors">Password Generator</a>
+          <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
+            Password Generator
           </Link>
-          <Link href="/seeded">
-            <a className="text-sm font-medium hover:text-primary transition-colors">Seeded Generator</a>
+          <Link href="/seeded" className="text-sm font-medium hover:text-primary transition-colors">
+            Seeded Generator
           </Link>
-          <Link href="/passphrase">
-            <a className="text-sm font-medium hover:text-primary transition-colors">Passphrase</a>
+          <Link href="/passphrase" className="text-sm font-medium hover:text-primary transition-colors">
+            Passphrase
           </Link>
-          <Link href="/about">
-            <a className="text-sm font-medium hover:text-primary transition-colors">About</a>
+          <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
+            About
           </Link>
         </nav>
         

@@ -29,7 +29,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const password = generatePassword(result.data);
       
       return res.status(200).json({ password });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error in /api/generate-password:", error);
       return res.status(500).json({ 
         message: error.message || "An error occurred while generating password" 
@@ -54,7 +54,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const password = generateSeededPassword(result.data);
       
       return res.status(200).json({ password });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error in /api/generate-seeded-password:", error);
       return res.status(500).json({ 
         message: error.message || "An error occurred while generating seeded password" 
@@ -79,7 +79,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const password = generatePassphrase(result.data);
       
       return res.status(200).json({ password });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error in /api/generate-passphrase:", error);
       return res.status(500).json({ 
         message: error.message || "An error occurred while generating passphrase" 
@@ -136,7 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       return res.status(200).json(result);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error in /api/v1/generate:", error);
       return res.status(500).json({ 
         message: error.message || "An error occurred while processing your request" 
