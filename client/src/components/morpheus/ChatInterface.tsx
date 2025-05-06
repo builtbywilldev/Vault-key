@@ -18,7 +18,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   
   // Scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current) {
+      // Use setTimeout to ensure scroll happens after DOM update and animation starts
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
   }, [messages]);
   
   // Update messages when initialMessages change
