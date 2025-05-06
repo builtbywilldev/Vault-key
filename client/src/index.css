@@ -129,18 +129,33 @@
   display: flex;
   border-bottom: 1px solid hsl(var(--border));
   background: linear-gradient(to right, hsl(var(--background)), hsl(var(--card)));
+  overflow-x: auto;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.morpheus-tabs::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
 }
 
 .morpheus-tab {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1rem;
   color: hsl(var(--muted-foreground));
   cursor: pointer;
   transition: all 0.3s ease;
   border-bottom: 2px solid transparent;
   font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .morpheus-tab {
+    padding: 0.75rem 1.25rem;
+  }
 }
 
 .morpheus-tab:hover {
@@ -157,6 +172,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* On small screens, show only icons */
+@media (max-width: 480px) {
+  .morpheus-tab-label {
+    display: none;
+  }
+  
+  .morpheus-tab {
+    padding: 0.75rem;
+    justify-content: center;
+    flex: 1;
+  }
 }
 
 .morpheus-content {
@@ -183,12 +211,19 @@
 }
 
 .morpheus-message {
-  max-width: 80%;
-  padding: 1rem;
+  max-width: 90%;
+  padding: 0.75rem;
   border-radius: 0.75rem;
   position: relative;
   animation: message-fade-in 0.3s ease-out;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 640px) {
+  .morpheus-message {
+    max-width: 80%;
+    padding: 1rem;
+  }
 }
 
 .morpheus-message-header {
@@ -456,9 +491,15 @@
 /* Agent cards */
 .morpheus-agent-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1rem;
   padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .morpheus-agent-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
 }
 
 .morpheus-agent-card {
@@ -531,8 +572,17 @@
 
 .morpheus-log-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.5rem;
   font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .morpheus-log-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 .morpheus-log-time {
@@ -562,9 +612,23 @@
 
 .morpheus-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .morpheus-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .morpheus-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
 }
 
 .morpheus-stat-card {

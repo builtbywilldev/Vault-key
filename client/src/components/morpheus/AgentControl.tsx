@@ -68,10 +68,6 @@ const AgentControl: React.FC<AgentControlProps> = ({ initialAgents = [] }) => {
         <h2 className="text-2xl font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
           Agent Control
         </h2>
-        <button className="py-2 px-4 bg-primary text-white rounded-lg flex items-center gap-2 hover:bg-opacity-90 transition-colors">
-          <Plus size={18} />
-          <span>New Agent</span>
-        </button>
       </div>
       
       <div className="morpheus-agent-grid">
@@ -92,11 +88,7 @@ const AgentControl: React.FC<AgentControlProps> = ({ initialAgents = [] }) => {
       
       {agents.length === 0 && (
         <div className="flex flex-col items-center justify-center p-8 text-muted-foreground">
-          <p className="mb-4">No agents configured yet.</p>
-          <button className="py-2 px-4 bg-primary text-white rounded-lg flex items-center gap-2 hover:bg-opacity-90 transition-colors">
-            <Plus size={18} />
-            <span>Create your first agent</span>
-          </button>
+          <p>No agents configured yet.</p>
         </div>
       )}
     </div>
