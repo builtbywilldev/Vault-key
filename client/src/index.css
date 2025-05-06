@@ -3,61 +3,91 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 20 14.3% 4.1%;
-  --muted: 60 4.8% 95.9%;
-  --muted-foreground: 25 5.3% 44.7%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 20 14.3% 4.1%;
-  --card: 0 0% 100%;
-  --card-foreground: 20 14.3% 4.1%;
-  --border: 20 5.9% 90%;
-  --input: 20 5.9% 90%;
-  --primary: 230 80% 50%;
-  --primary-foreground: 211 100% 99%;
-  --secondary: 340 100% 47%;
-  --secondary-foreground: 0 0% 100%;
-  --accent: 60 4.8% 95.9%;
-  --accent-foreground: 24 9.8% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 60 9.1% 97.8%;
-  --ring: 230 80% 50%;
+  /* Morpheus mythic theme */
+  --background: 240 20% 10%;      /* #181820 - Deep background */
+  --foreground: 0 0% 100%;        /* #ffffff - White text */
+  --muted: 240 12% 54%;           /* #7c7c94 - Muted text */
+  --muted-foreground: 240 15% 75%; /* #b4b4cc - Light gray with purple tint */
+  
+  --popover: 240 15% 12%;         /* #1e1e2a - Card background */
+  --popover-foreground: 0 0% 100%; /* #ffffff - White text */
+  
+  --card: 240 15% 12%;            /* #1e1e2a - Card background */
+  --card-foreground: 0 0% 100%;   /* #ffffff - White text */
+  
+  --border: 240 15% 20%;          /* #252535 - Borders */
+  --input: 240 15% 20%;           /* #252535 - Input background */
+  
+  --primary: 263 70% 52%;         /* #7342d6 - Dark purple */
+  --primary-foreground: 0 0% 100%; /* #ffffff - White text */
+  
+  --secondary: 250 100% 62%;      /* #5d3eff - Blue */
+  --secondary-foreground: 0 0% 100%; /* #ffffff - White text */
+  
+  --accent: 264 95% 73%;          /* #a17bfc - Light purple */
+  --accent-foreground: 0 0% 100%; /* #ffffff - White text */
+  
+  --destructive: 0 84% 60%;       /* #ff3b30 - Error state */
+  --destructive-foreground: 0 0% 100%; /* #ffffff - White text */
+  
+  --ring: 263 70% 52%;            /* #7342d6 - Dark purple */
   --radius: 0.5rem;
-  --chart-1: 230 80% 50%;
-  --chart-2: 340 100% 47%;
-  --chart-3: 195 85% 41%;
-  --chart-4: 279 70% 48%;
-  --chart-5: 43 96% 58%;
-  --sidebar-background: 230 80% 50%;
-  --sidebar-foreground: 0 0% 100%;
-  --sidebar-primary: 0 0% 100%;
-  --sidebar-primary-foreground: 230 80% 50%;
-  --sidebar-accent: 0 0% 90%;
-  --sidebar-accent-foreground: 230 80% 50%;
-  --sidebar-border: 0 0% 85%;
-  --sidebar-ring: 0 0% 100%;
+  
+  /* Chart colors */
+  --chart-1: 263 70% 52%;         /* #7342d6 - Dark purple */
+  --chart-2: 250 100% 62%;        /* #5d3eff - Blue */
+  --chart-3: 264 95% 73%;         /* #a17bfc - Light purple */
+  --chart-4: 279 70% 48%;         /* Purple-ish */
+  --chart-5: 43 96% 58%;          /* Gold */
+  
+  /* Sidebar */
+  --sidebar-background: 240 20% 12%; /* #1c1c24 - Slightly lighter than main bg */
+  --sidebar-foreground: 0 0% 100%; /* #ffffff - White text */
+  --sidebar-primary: 263 70% 52%; /* #7342d6 - Dark purple */
+  --sidebar-primary-foreground: 0 0% 100%; /* #ffffff - White text */
+  --sidebar-accent: 250 100% 62%; /* #5d3eff - Blue */
+  --sidebar-accent-foreground: 0 0% 100%; /* #ffffff - White text */
+  --sidebar-border: 240 15% 20%;  /* #252535 - Borders */
+  --sidebar-ring: 0 0% 100%;      /* #ffffff - White */
+  
+  /* Morpheus specific variables */
+  --morpheus-user-msg: 250 100% 62%;    /* #5d3eff - Blue */
+  --morpheus-assistant-msg: 263 70% 52%; /* #7342d6 - Dark purple */
+  --morpheus-status-idle: 240 12% 54%;  /* #7c7c94 - Muted */
+  --morpheus-status-active: 142 100% 40%; /* #4cd964 - Green */
+  --morpheus-status-paused: 48 100% 50%; /* #ffcc00 - Yellow */
+  --morpheus-status-error: 0 84% 60%;   /* #ff3b30 - Red */
 }
 
 .dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --primary: 230 80% 50%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 340 100% 47%;
-  --secondary-foreground: 0 0% 100%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 240 4.9% 83.9%;
+  /* Morpheus mythic theme (dark mode is default) */
+  --background: 240 20% 10%;      /* #181820 - Deep background */
+  --foreground: 0 0% 100%;        /* #ffffff - White text */
+  --muted: 240 12% 54%;           /* #7c7c94 - Muted text */
+  --muted-foreground: 240 15% 75%; /* #b4b4cc - Light gray with purple tint */
+  
+  --popover: 240 15% 12%;         /* #1e1e2a - Card background */
+  --popover-foreground: 0 0% 100%; /* #ffffff - White text */
+  
+  --card: 240 15% 12%;            /* #1e1e2a - Card background */
+  --card-foreground: 0 0% 100%;   /* #ffffff - White text */
+  
+  --border: 240 15% 20%;          /* #252535 - Borders */
+  --input: 240 15% 20%;           /* #252535 - Input background */
+  
+  --primary: 263 70% 52%;         /* #7342d6 - Dark purple */
+  --primary-foreground: 0 0% 100%; /* #ffffff - White text */
+  
+  --secondary: 250 100% 62%;      /* #5d3eff - Blue */
+  --secondary-foreground: 0 0% 100%; /* #ffffff - White text */
+  
+  --accent: 264 95% 73%;          /* #a17bfc - Light purple */
+  --accent-foreground: 0 0% 100%; /* #ffffff - White text */
+  
+  --destructive: 0 84% 60%;       /* #ff3b30 - Error state */
+  --destructive-foreground: 0 0% 100%; /* #ffffff - White text */
+  
+  --ring: 263 70% 52%;            /* #7342d6 - Dark purple */
   --radius: 0.5rem;
 }
 
@@ -86,4 +116,473 @@
 
 .transition-height {
   transition: max-height 0.3s ease-in-out;
+}
+
+/* Morpheus Chat specific styles */
+.morpheus-layout {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+}
+
+.morpheus-tabs {
+  display: flex;
+  border-bottom: 1px solid hsl(var(--border));
+  background: linear-gradient(to right, hsl(var(--background)), hsl(var(--card)));
+}
+
+.morpheus-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+  font-weight: 500;
+}
+
+.morpheus-tab:hover {
+  color: hsl(var(--foreground));
+  background-color: hsla(var(--muted), 0.1);
+}
+
+.morpheus-tab.active {
+  color: hsl(var(--primary));
+  border-bottom: 2px solid hsl(var(--primary));
+}
+
+.morpheus-tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.morpheus-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.morpheus-chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.morpheus-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.morpheus-message {
+  max-width: 80%;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  position: relative;
+  animation: message-fade-in 0.3s ease-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.morpheus-message-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.morpheus-message-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.morpheus-user-avatar {
+  background: linear-gradient(45deg, hsl(var(--morpheus-user-msg)), hsl(var(--morpheus-user-msg) / 0.7));
+  color: hsl(var(--primary-foreground));
+}
+
+.morpheus-assistant-avatar {
+  background: linear-gradient(45deg, hsl(var(--morpheus-assistant-msg)), hsl(var(--morpheus-assistant-msg) / 0.7));
+  color: hsl(var(--primary-foreground));
+}
+
+.morpheus-message-sender {
+  font-weight: 600;
+}
+
+.morpheus-message-time {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  margin-left: auto;
+}
+
+.morpheus-message-content {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.morpheus-user-message {
+  align-self: flex-end;
+  background-color: hsl(var(--morpheus-user-msg) / 0.1);
+  border: 1px solid hsl(var(--morpheus-user-msg) / 0.2);
+}
+
+.morpheus-assistant-message {
+  align-self: flex-start;
+  background-color: hsl(var(--morpheus-assistant-msg) / 0.1);
+  border: 1px solid hsl(var(--morpheus-assistant-msg) / 0.2);
+}
+
+.morpheus-chat-input-container {
+  padding: 1rem;
+  background-color: hsl(var(--card));
+  border-top: 1px solid hsl(var(--border));
+}
+
+.morpheus-chat-input-wrapper {
+  display: flex;
+  position: relative;
+  gap: 0.5rem;
+  background-color: hsl(var(--input));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.morpheus-chat-input-wrapper:focus-within {
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+}
+
+.morpheus-chat-textarea {
+  flex: 1;
+  padding: 0.5rem;
+  background-color: transparent;
+  color: hsl(var(--foreground));
+  resize: none;
+  min-height: 24px;
+  max-height: 200px;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.morpheus-chat-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.morpheus-chat-action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: transparent;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.morpheus-chat-action-button:hover {
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--muted) / 0.1);
+}
+
+.morpheus-chat-clear-button {
+  position: absolute;
+  right: 80px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: hsl(var(--muted) / 0.2);
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.morpheus-chat-clear-button:hover {
+  background-color: hsl(var(--muted) / 0.3);
+  color: hsl(var(--foreground));
+}
+
+.morpheus-chat-send-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)));
+  color: hsl(var(--primary-foreground));
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.morpheus-chat-send-button:hover:not(.disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px hsl(var(--primary) / 0.5);
+}
+
+.morpheus-chat-send-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: hsl(var(--muted));
+}
+
+.morpheus-chat-input-footer {
+  text-align: center;
+  padding-top: 0.5rem;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.morpheus-chat-input-container:focus-within .morpheus-chat-input-footer {
+  opacity: 1;
+}
+
+.morpheus-thinking {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: hsl(var(--card));
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+.morpheus-thinking-dots {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.morpheus-thinking-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: hsl(var(--primary));
+  animation: thinking-pulse 1.5s infinite ease-in-out;
+}
+
+.morpheus-thinking-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.morpheus-thinking-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes thinking-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes message-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Status indicators */
+.morpheus-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  background-color: hsl(var(--card));
+}
+
+.morpheus-status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.morpheus-status-idle .morpheus-status-indicator {
+  background-color: hsl(var(--morpheus-status-idle));
+}
+
+.morpheus-status-active .morpheus-status-indicator {
+  background-color: hsl(var(--morpheus-status-active));
+  animation: pulse 2s infinite;
+}
+
+.morpheus-status-paused .morpheus-status-indicator {
+  background-color: hsl(var(--morpheus-status-paused));
+}
+
+.morpheus-status-error .morpheus-status-indicator {
+  background-color: hsl(var(--morpheus-status-error));
+}
+
+/* Agent cards */
+.morpheus-agent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.morpheus-agent-card {
+  background-color: hsl(var(--card));
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  border: 1px solid hsl(var(--border));
+  transition: all 0.3s ease;
+}
+
+.morpheus-agent-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+.morpheus-agent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.morpheus-agent-name {
+  font-weight: 600;
+  font-size: 1.125rem;
+  background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Memory Logs */
+.morpheus-logs-container {
+  height: 100%;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.morpheus-log-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: hsl(var(--card));
+  margin-bottom: 0.75rem;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.morpheus-log-entry:hover {
+  background-color: hsl(var(--card) / 0.8);
+}
+
+.morpheus-log-entry.info {
+  border-left-color: hsl(var(--primary));
+}
+
+.morpheus-log-entry.warning {
+  border-left-color: hsl(var(--morpheus-status-paused));
+}
+
+.morpheus-log-entry.error {
+  border-left-color: hsl(var(--morpheus-status-error));
+}
+
+.morpheus-log-entry.debug {
+  border-left-color: hsl(var(--muted));
+}
+
+.morpheus-log-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.morpheus-log-time {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+}
+
+/* Dashboard styles */
+.morpheus-dashboard {
+  padding: 1.5rem;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.morpheus-dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.morpheus-dashboard-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.morpheus-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.morpheus-stat-card {
+  background-color: hsl(var(--card));
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 1px solid hsl(var(--border));
+}
+
+.morpheus-stat-title {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.morpheus-stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
 }

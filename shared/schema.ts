@@ -1,4 +1,4 @@
-import { pgTable, text, serial, timestamp, integer, boolean, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, timestamp, integer, boolean, varchar, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -14,10 +14,6 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
-  storedPasswords: many(storedPasswords),
-}));
-
 export const insertUserSchema = createInsertSchema(users).pick({
   email: true,
   username: true,
@@ -26,6 +22,13 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+// User relations (need to be after all table definitions)
+export const usersRelations = relations(users, ({ many }) => ({
+  storedPasswords: many(storedPasswords),
+  chatMessages: many(chatMessages),
+  agents: many(agents),
+}));
 
 // Authentication schemas
 export const userRegisterSchema = z.object({
@@ -124,3 +127,88 @@ export const generatePasswordResponseSchema = z.object({
 });
 
 export type GeneratePasswordResponse = z.infer<typeof generatePasswordResponseSchema>;
+
+// Morpheus Chat Messages
+export const chatMessages = pgTable("chat_messages", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  content: text("content").notNull(),
+  role: varchar("role", { length: 20 }).notNull(), // 'user', 'assistant', 'system'
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
+export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
+  user: one(users, {
+    fields: [chatMessages.userId],
+    references: [users.id]
+  })
+}));
+
+export const insertChatMessageSchema = createInsertSchema(chatMessages)
+  .omit({ id: true, createdAt: true });
+
+export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
+export type ChatMessage = typeof chatMessages.$inferSelect;
+
+// Morpheus Agents
+export const agents = pgTable("agents", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description"),
+  status: varchar("status", { length: 20 }).notNull().default("idle"), // 'idle', 'active', 'paused', 'error'
+  capabilities: jsonb("capabilities"),
+  configuration: jsonb("configuration"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const agentsRelations = relations(agents, ({ one, many }) => ({
+  user: one(users, {
+    fields: [agents.userId],
+    references: [users.id]
+  }),
+  logs: many(agentLogs)
+}));
+
+export const insertAgentSchema = createInsertSchema(agents)
+  .omit({ id: true, userId: true, createdAt: true, updatedAt: true, status: true });
+
+export type InsertAgent = z.infer<typeof insertAgentSchema>;
+export type Agent = typeof agents.$inferSelect;
+
+export const updateAgentSchema = insertAgentSchema.partial();
+export type UpdateAgent = z.infer<typeof updateAgentSchema>;
+
+// Agent Logs
+export const agentLogs = pgTable("agent_logs", {
+  id: serial("id").primaryKey(),
+  agentId: integer("agent_id").notNull().references(() => agents.id, { onDelete: "cascade" }),
+  action: varchar("action", { length: 100 }).notNull(),
+  details: jsonb("details"),
+  logLevel: varchar("log_level", { length: 20 }).notNull().default("info"), // 'info', 'warning', 'error', 'debug'
+  timestamp: timestamp("timestamp").defaultNow().notNull()
+});
+
+export const agentLogsRelations = relations(agentLogs, ({ one }) => ({
+  agent: one(agents, {
+    fields: [agentLogs.agentId],
+    references: [agents.id]
+  })
+}));
+
+export const insertAgentLogSchema = createInsertSchema(agentLogs)
+  .omit({ id: true, timestamp: true });
+
+export type InsertAgentLog = z.infer<typeof insertAgentLogSchema>;
+export type AgentLog = typeof agentLogs.$inferSelect;
+
+// Chat Commands Schema
+export const chatCommandSchema = z.object({
+  command: z.string().min(1, "Command is required"),
+  args: z.record(z.any()).optional(),
+  metadata: z.record(z.any()).optional()
+});
+
+export type ChatCommand = z.infer<typeof chatCommandSchema>;

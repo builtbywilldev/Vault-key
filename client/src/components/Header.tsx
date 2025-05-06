@@ -52,6 +52,9 @@ export default function Header() {
           <Link href="/passphrase" className="text-sm font-medium hover:text-primary transition-colors">
             Passphrase
           </Link>
+          <Link href="/morpheus" className="text-sm font-medium hover:text-primary transition-colors">
+            Morpheus
+          </Link>
           {isAuthenticated && (
             <Link href="/saved-passwords" className="text-sm font-medium hover:text-primary transition-colors">
               Saved Passwords
@@ -117,6 +120,9 @@ export default function Header() {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/passphrase">Passphrase</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/morpheus">Morpheus</Link>
               </DropdownMenuItem>
               {isAuthenticated && (
                 <DropdownMenuItem asChild>

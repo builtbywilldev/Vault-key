@@ -12,6 +12,7 @@ import About from "@/pages/About";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import SavedPasswords from "@/pages/SavedPasswords";
+import Morpheus from "@/pages/Morpheus";
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/saved-passwords" component={SavedPasswords} />
+      <Route path="/morpheus" component={Morpheus} />
       <Route component={NotFound} />
     </Switch>
   );
