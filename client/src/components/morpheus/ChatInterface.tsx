@@ -71,46 +71,79 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     }
   }, []);
   
-  // Mobile viewport and keyboard visibility adjustments
+  // Mobile viewport and keyboard visibility adjustments with more robust iOS detection
   useEffect(() => {
     const handleResize = () => {
       // Set viewport height variable
       const viewportHeight = window.visualViewport?.height || window.innerHeight;
       document.documentElement.style.setProperty('--viewport-height', `${viewportHeight}px`);
       
-      // Detect keyboard visibility
-      const isIOS = document.body.classList.contains('ios-device');
+      // Detect keyboard visibility with improved iOS detection
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+      // Update the ios-device class to ensure it's always correct
       if (isIOS) {
-        const windowHeight = window.innerHeight;
-        const keyboardOpen = window.visualViewport ? 
-          window.innerHeight > window.visualViewport.height + 150 : // visualViewport API
-          windowHeight < window.outerHeight * 0.75; // Fallback
-          
+        document.body.classList.add('ios-device');
+      } else {
+        document.body.classList.remove('ios-device');
+      }
+      
+      if (isIOS) {
+        // More accurate keyboard detection
+        let keyboardOpen = false;
+        
+        // Use visualViewport API when available (modern iOS Safari)
+        if (window.visualViewport) {
+          // When keyboard is open, the visual viewport height is significantly smaller
+          // than the inner window height (by approximately the keyboard height)
+          keyboardOpen = window.innerHeight - window.visualViewport.height > 140;
+        } else {
+          // Fallback for older browsers - not as accurate
+          const windowHeight = window.innerHeight;
+          keyboardOpen = windowHeight < window.outerHeight * 0.75;
+        }
+        
+        // Apply or remove the class based on keyboard status
         if (keyboardOpen) {
           document.body.classList.add('ios-keyboard-open');
+          
+          // When keyboard opens, scroll the messages to the bottom
+          // to ensure the latest messages and input are visible
+          setTimeout(() => {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+          }, 300);
         } else {
           document.body.classList.remove('ios-keyboard-open');
         }
       }
     };
     
-    // Attach event listeners
+    // Attach event listeners with better detection
     if (window.visualViewport) {
+      // Modern browsers with visualViewport API
       const visualViewport = window.visualViewport;
       visualViewport.addEventListener('resize', handleResize);
       visualViewport.addEventListener('scroll', handleResize);
+      
+      // Also listen for orientation changes which affect iOS keyboard
+      window.addEventListener('orientationchange', handleResize);
+      
       handleResize(); // Initial call
       
       return () => {
         visualViewport.removeEventListener('resize', handleResize);
         visualViewport.removeEventListener('scroll', handleResize);
+        window.removeEventListener('orientationchange', handleResize);
       };
     } else {
-      // Fallback to regular window resize
+      // Fallback to regular window resize and orientation change
       window.addEventListener('resize', handleResize);
+      window.addEventListener('orientationchange', handleResize);
       handleResize();
       
-      return () => window.removeEventListener('resize', handleResize);
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        window.removeEventListener('orientationchange', handleResize);
+      };
     }
   }, []);
   

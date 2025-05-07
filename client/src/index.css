@@ -251,29 +251,64 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
   }
   
   .ios-keyboard-open .morpheus-chat-container {
     /* Adjust bottom positioning when keyboard is open */
-    bottom: 300px; /* Approximate keyboard height */
+    bottom: 0;
+    height: calc(var(--viewport-height) - 300px); /* Adjusts container height dynamically */
   }
   
   .ios-keyboard-open .morpheus-messages {
     /* Adjust bottom positioning when keyboard is open */
     bottom: 80px; /* Smaller input area when keyboard is visible */
+    max-height: calc(var(--viewport-height) - 380px); /* Dynamic height based on viewport */
+  }
+  
+  /* Prevent elastic scrolling on iOS */
+  .morpheus-messages {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
   
   /* More compact sizing for mobile input */
   .morpheus-chat-input-container {
     padding: 0.75rem;
+    min-height: 80px; /* Fixed minimum height for input area */
   }
   
   .morpheus-chat-textarea {
     max-height: 80px;
+    font-size: 16px; /* Prevents iOS zoom on input focus */
   }
   
   .morpheus-message {
     max-width: 90%;
+    margin-bottom: 8px; /* More compact spacing */
+  }
+  
+  /* Make send button larger for easier touch */
+  .morpheus-chat-send-button {
+    width: 42px;
+    height: 42px;
+  }
+  
+  /* More touch-friendly tab navigation */
+  .morpheus-tab {
+    padding: 1rem 0.75rem;
+    min-width: 60px; /* Ensure minimum touch target size */
+  }
+  
+  /* Improve mobile profile/auth display */
+  .mobile-user-profile {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background-color: hsl(var(--card) / 0.7);
+    border-radius: 0.5rem;
+    border: 1px solid hsl(var(--border));
+    backdrop-filter: blur(4px);
   }
 }
 

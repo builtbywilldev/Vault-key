@@ -11,7 +11,9 @@ const ChatInput: React.FC<ChatInputProps> = ({
   isDisabled = false 
 }) => {
   const [message, setMessage] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   
   // Auto-resize textarea as content grows, but with limits for mobile
   useEffect(() => {
@@ -26,6 +28,42 @@ const ChatInput: React.FC<ChatInputProps> = ({
       textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
     }
   }, [message]);
+  
+  // Improve mobile experience when input is focused
+  useEffect(() => {
+    const isIOS = document.body.classList.contains('ios-device');
+    
+    if (isIOS) {
+      if (isFocused) {
+        // When input is focused on iOS, scroll to make sure it's visible
+        setTimeout(() => {
+          // Ensure the input is in view when the keyboard appears
+          textareaRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      }
+    }
+  }, [isFocused]);
+  
+  // Better touch handling for mobile
+  useEffect(() => {
+    const handleTouchMove = (e: TouchEvent) => {
+      // If we're on iOS with a focused input, prevent background scrolling behind keyboard
+      const isIOS = document.body.classList.contains('ios-device');
+      if (isIOS && isFocused && e.target !== textareaRef.current) {
+        // Allow scrolling within the message area, but not on empty spaces
+        const target = e.target as HTMLElement;
+        const isMessageArea = target.closest('.morpheus-messages');
+        if (!isMessageArea) {
+          e.preventDefault();
+        }
+      }
+    };
+    
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    return () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [isFocused]);
   
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
@@ -43,6 +81,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
         const isIOS = document.body.classList.contains('ios-device');
         if (isIOS) {
           textareaRef.current.blur();
+          setIsFocused(false);
+          
           // Remove keyboard open class after a delay
           setTimeout(() => {
             document.body.classList.remove('ios-keyboard-open');
@@ -62,22 +102,32 @@ const ChatInput: React.FC<ChatInputProps> = ({
       const isIOS = document.body.classList.contains('ios-device');
       if (isIOS && e.currentTarget) {
         e.currentTarget.blur();
+        setIsFocused(false);
       }
     }
   };
   
   return (
-    <form onSubmit={handleSubmit} className="morpheus-chat-input-container">
+    <form 
+      ref={formRef}
+      onSubmit={handleSubmit} 
+      className={`morpheus-chat-input-container ${isFocused ? 'input-focused' : ''}`}
+    >
       <div className="morpheus-chat-input-wrapper">
         <textarea
           ref={textareaRef}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           placeholder="Send a message..."
           disabled={isDisabled}
           className="morpheus-chat-textarea"
           rows={1}
+          autoCapitalize="sentences"
+          autoComplete="off"
+          spellCheck={true}
         />
         
         {message && (
@@ -107,14 +157,14 @@ const ChatInput: React.FC<ChatInputProps> = ({
             disabled={!message.trim() || isDisabled}
             aria-label="Send message"
           >
-            <Send size={18} />
+            <Send size={20} /> {/* Slightly larger icon for better touch targets */}
           </button>
         </div>
       </div>
       
       <div className="morpheus-chat-input-footer">
         <span className="text-xs text-muted-foreground">
-          Morpheus responds based on your input. Press Enter to send.
+          {window.innerWidth < 640 ? 'Tap send or press Enter to submit' : 'Morpheus responds based on your input. Press Enter to send.'}
         </span>
       </div>
     </form>
