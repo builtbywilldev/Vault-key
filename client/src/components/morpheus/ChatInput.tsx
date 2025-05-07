@@ -143,15 +143,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
         
         <div className="morpheus-chat-actions">
           <button
-            type="button"
-            className="morpheus-chat-action-button"
-            aria-label="Voice input"
-            disabled={isDisabled}
-          >
-            <Mic size={18} />
-          </button>
-          
-          <button
             type="submit"
             className={`morpheus-chat-send-button ${(!message.trim() || isDisabled) ? 'disabled' : ''}`}
             disabled={!message.trim() || isDisabled}
@@ -162,11 +153,14 @@ const ChatInput: React.FC<ChatInputProps> = ({
         </div>
       </div>
       
-      <div className="morpheus-chat-input-footer">
-        <span className="text-xs text-muted-foreground">
-          {window.innerWidth < 640 ? 'Tap send or press Enter to submit' : 'Morpheus responds based on your input. Press Enter to send.'}
-        </span>
-      </div>
+      {/* Only show footer text on desktop */}
+      {window.innerWidth >= 640 && (
+        <div className="morpheus-chat-input-footer">
+          <span className="text-xs text-muted-foreground">
+            Morpheus responds based on your input. Press Enter to send.
+          </span>
+        </div>
+      )}
     </form>
   );
 };
