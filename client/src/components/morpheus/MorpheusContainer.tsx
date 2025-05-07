@@ -77,10 +77,10 @@ const MorpheusContainer: React.FC = () => {
   return (
     <div className="morpheus-layout">
       <TabNavigation activeTab={activeTab} onTabChange={handleTabChange} />
-      <div className="morpheus-content">
+      <div className="morpheus-content relative">
         {/* User profile for mobile - shown above content when authenticated */}
         {isMobile && isAuthenticated && typedUser && (
-          <div className="mobile-user-profile flex items-center justify-between px-3 py-2">
+          <div className="mobile-user-profile flex items-center justify-between px-3 py-2 mb-2 z-10 sticky top-0">
             <div className="flex items-center gap-2">
               {typedUser.profileImageUrl ? (
                 <img 
