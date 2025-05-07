@@ -75,10 +75,9 @@ const MorpheusContainer: React.FC = () => {
   );
   
   return (
-    <div className={`morpheus-layout ${isAuthenticated ? 'authenticated' : ''}`}>
+    <div className="morpheus-layout">
       <TabNavigation activeTab={activeTab} onTabChange={handleTabChange} />
-      
-      <div className={`morpheus-content ${isAuthenticated && isMobile ? 'has-user-profile' : ''}`}>
+      <div className="morpheus-content">
         {/* User profile for mobile - shown above content when authenticated */}
         {isMobile && isAuthenticated && typedUser && (
           <div className="mobile-user-profile flex items-center justify-between px-3 py-2">
@@ -87,14 +86,14 @@ const MorpheusContainer: React.FC = () => {
                 <img 
                   src={typedUser.profileImageUrl} 
                   alt={typedUser.username} 
-                  className="w-7 h-7 rounded-full border border-primary/20"
+                  className="w-8 h-8 rounded-full border border-primary/20"
                 />
               ) : (
-                <div className="w-7 h-7 rounded-full bg-gradient-to-r from-primary/30 to-secondary/30 flex items-center justify-center">
-                  <UserIcon size={14} className="text-white/80" />
+                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary/30 to-secondary/30 flex items-center justify-center">
+                  <UserIcon size={16} className="text-white/80" />
                 </div>
               )}
-              <span className="text-xs text-white/90 font-medium">{typedUser.username}</span>
+              <span className="text-sm text-white/90 font-medium">{typedUser.username}</span>
             </div>
             <a 
               href="/api/logout" 
