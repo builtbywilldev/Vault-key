@@ -1,26 +1,35 @@
-import { pgTable, text, serial, timestamp, integer, boolean, varchar, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, timestamp, integer, boolean, varchar, jsonb, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
 
-// Users table (for authentication and sync)
+// Session storage table for Replit Auth
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
+// Users table (updated for Replit Auth)
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
+  id: varchar("id").primaryKey().notNull(), // sub from Replit Auth
   username: varchar("username", { length: 100 }).notNull().unique(),
-  passwordHash: text("password_hash").notNull(),
-  apiKey: varchar("api_key", { length: 64 }).notNull().unique(),
+  email: varchar("email", { length: 255 }).unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  bio: text("bio"),
+  profileImageUrl: varchar("profile_image_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  email: true,
-  username: true,
-  passwordHash: true,
-});
+export const upsertUserSchema = createInsertSchema(users);
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
 // User relations (need to be after all table definitions)
@@ -49,7 +58,7 @@ export type UserLogin = z.infer<typeof userLoginSchema>;
 // Stored passwords table (for syncing)
 export const storedPasswords = pgTable("stored_passwords", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   name: varchar("name", { length: 255 }).notNull(),
   website: varchar("website", { length: 255 }),
   username: varchar("username", { length: 255 }),
@@ -78,15 +87,7 @@ export type StoredPassword = typeof storedPasswords.$inferSelect;
 export const updateStoredPasswordSchema = insertStoredPasswordSchema.partial();
 export type UpdateStoredPassword = z.infer<typeof updateStoredPasswordSchema>;
 
-// Sessions table (required for authentication)
-export const sessions = pgTable(
-  "sessions",
-  {
-    sid: text("sid").primaryKey(),
-    sess: text("sess").notNull(),
-    expire: timestamp("expire").notNull(),
-  }
-);
+// Sessions table is now defined at the top of the file for Replit Auth
 
 // Define API request schemas for password generation
 export const generatePasswordRequestSchema = z.object({
@@ -131,7 +132,7 @@ export type GeneratePasswordResponse = z.infer<typeof generatePasswordResponseSc
 // Morpheus Chat Messages
 export const chatMessages = pgTable("chat_messages", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   content: text("content").notNull(),
   role: varchar("role", { length: 20 }).notNull(), // 'user', 'assistant', 'system'
   metadata: jsonb("metadata"),
