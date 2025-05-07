@@ -13,12 +13,17 @@ const ChatInput: React.FC<ChatInputProps> = ({
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   
-  // Auto-resize textarea as content grows
+  // Auto-resize textarea as content grows, but with limits for mobile
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = 'auto';
-      textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`;
+      
+      // On mobile, limit the max height more strictly to prevent keyboard issues
+      const isMobile = window.innerWidth < 640;
+      const maxHeight = isMobile ? 80 : 150;
+      
+      textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
     }
   }, [message]);
   

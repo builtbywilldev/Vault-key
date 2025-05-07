@@ -63,6 +63,28 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     };
   }, []);
   
+  // Detect virtual keyboard on mobile
+  useEffect(() => {
+    const detectKeyboard = () => {
+      // This helps determine if keyboard is likely shown on mobile
+      const isMobile = window.innerWidth < 640;
+      const isKeyboardOpen = isMobile && window.innerHeight < window.outerHeight * 0.75;
+      
+      // Apply a class to the container to adjust styles when keyboard is shown
+      const messagesContainer = document.querySelector('.morpheus-messages');
+      if (messagesContainer) {
+        if (isKeyboardOpen) {
+          messagesContainer.classList.add('keyboard-open');
+        } else {
+          messagesContainer.classList.remove('keyboard-open');
+        }
+      }
+    };
+
+    window.addEventListener('resize', detectKeyboard);
+    return () => window.removeEventListener('resize', detectKeyboard);
+  }, []);
+  
   // Scroll to bottom when messages change
   useEffect(() => {
     if (messagesEndRef.current) {
