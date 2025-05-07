@@ -38,6 +38,16 @@ const ChatInput: React.FC<ChatInputProps> = ({
       // Reset textarea height
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
+        
+        // On iOS, blur the textarea to close keyboard
+        const isIOS = document.body.classList.contains('ios-device');
+        if (isIOS) {
+          textareaRef.current.blur();
+          // Remove keyboard open class after a delay
+          setTimeout(() => {
+            document.body.classList.remove('ios-keyboard-open');
+          }, 100);
+        }
       }
     }
   };
@@ -47,6 +57,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
+      
+      // On iOS, blur the input after sending to help hide the keyboard
+      const isIOS = document.body.classList.contains('ios-device');
+      if (isIOS && e.currentTarget) {
+        e.currentTarget.blur();
+      }
     }
   };
   

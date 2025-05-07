@@ -244,12 +244,23 @@
 
 /* Mobile specific styling */
 @media (max-width: 639px) {
-  /* Fix for iOS mobile keyboard issues */
-  html, body {
-    height: 100%;
+  /* iOS specific fixes for keyboard */
+  body.ios-device {
+    /* Prevents scrolling into empty space when keyboard appears */
     position: fixed;
-    overflow: hidden;
     width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .ios-keyboard-open .morpheus-chat-container {
+    /* Adjust bottom positioning when keyboard is open */
+    bottom: 300px; /* Approximate keyboard height */
+  }
+  
+  .ios-keyboard-open .morpheus-messages {
+    /* Adjust bottom positioning when keyboard is open */
+    bottom: 80px; /* Smaller input area when keyboard is visible */
   }
   
   /* More compact sizing for mobile input */

@@ -63,25 +63,52 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     };
   }, []);
   
-  // Mobile viewport adjustments to handle keyboard visibility
+  // Detect iOS devices 
+  useEffect(() => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    if (isIOS) {
+      document.body.classList.add('ios-device');
+    }
+  }, []);
+  
+  // Mobile viewport and keyboard visibility adjustments
   useEffect(() => {
     const handleResize = () => {
-      // Apply any window-specific adjustments if needed
+      // Set viewport height variable
       const viewportHeight = window.visualViewport?.height || window.innerHeight;
       document.documentElement.style.setProperty('--viewport-height', `${viewportHeight}px`);
+      
+      // Detect keyboard visibility
+      const isIOS = document.body.classList.contains('ios-device');
+      if (isIOS) {
+        const windowHeight = window.innerHeight;
+        const keyboardOpen = window.visualViewport ? 
+          window.innerHeight > window.visualViewport.height + 150 : // visualViewport API
+          windowHeight < window.outerHeight * 0.75; // Fallback
+          
+        if (keyboardOpen) {
+          document.body.classList.add('ios-keyboard-open');
+        } else {
+          document.body.classList.remove('ios-keyboard-open');
+        }
+      }
     };
     
-    // Use visualViewport API if available (better for mobile keyboards)
+    // Attach event listeners
     if (window.visualViewport) {
       const visualViewport = window.visualViewport;
       visualViewport.addEventListener('resize', handleResize);
+      visualViewport.addEventListener('scroll', handleResize);
       handleResize(); // Initial call
       
-      return () => visualViewport.removeEventListener('resize', handleResize);
+      return () => {
+        visualViewport.removeEventListener('resize', handleResize);
+        visualViewport.removeEventListener('scroll', handleResize);
+      };
     } else {
       // Fallback to regular window resize
       window.addEventListener('resize', handleResize);
-      handleResize(); // Initial call
+      handleResize();
       
       return () => window.removeEventListener('resize', handleResize);
     }
@@ -134,9 +161,30 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     }
   };
   
+  // Handler to dismiss keyboard when tapping outside the input
+  const handleMessagesClick = () => {
+    // Only add this behavior for iOS devices to avoid side effects elsewhere
+    const isIOS = document.body.classList.contains('ios-device');
+    if (isIOS) {
+      // Find any active inputs and blur them to hide keyboard
+      const activeElement = document.activeElement as HTMLElement;
+      if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+        activeElement.blur();
+        
+        // Remove keyboard open class
+        setTimeout(() => {
+          document.body.classList.remove('ios-keyboard-open');
+        }, 100);
+      }
+    }
+  };
+
   return (
     <div className="morpheus-chat-container">
-      <div className="morpheus-messages">
+      <div 
+        className="morpheus-messages" 
+        onClick={handleMessagesClick}
+      >
         {/* Welcome message if no messages */}
         {messages.length === 0 && (
           <div className="text-center text-muted-foreground py-8">
