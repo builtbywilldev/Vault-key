@@ -4,17 +4,64 @@ import ChatInput from './ChatInput';
 
 interface ChatInterfaceProps {
   initialMessages?: MessageProps[];
-  onSendMessage: (message: string) => void;
+  onSendMessage?: (message: string) => void;
   isProcessing?: boolean;
 }
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ 
   initialMessages = [], 
   onSendMessage,
-  isProcessing = false
+  isProcessing: externalProcessing = false
 }) => {
   const [messages, setMessages] = useState<MessageProps[]>(initialMessages);
+  const [isProcessing, setIsProcessing] = useState<boolean>(externalProcessing);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const socketRef = useRef<WebSocket | null>(null);
+  
+  // Set up WebSocket connection
+  useEffect(() => {
+    // Create WebSocket connection
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    const socket = new WebSocket(wsUrl);
+    socketRef.current = socket;
+    
+    // Connection opened
+    socket.addEventListener('open', () => {
+      console.log('Connected to Morpheus WebSocket server');
+    });
+    
+    // Listen for messages
+    socket.addEventListener('message', (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        // Create a new message from the received data
+        const receivedMessage: MessageProps = {
+          role: data.role,
+          content: data.content,
+          timestamp: new Date(data.timestamp)
+        };
+        
+        // Add received message to the chat
+        setMessages(prev => [...prev, receivedMessage]);
+        setIsProcessing(false);
+      } catch (error) {
+        console.error('Error parsing message:', error);
+      }
+    });
+    
+    // Handle connection errors
+    socket.addEventListener('error', (error) => {
+      console.error('WebSocket error:', error);
+    });
+    
+    // Cleanup on unmount
+    return () => {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.close();
+      }
+    };
+  }, []);
   
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -28,8 +75,15 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   
   // Update messages when initialMessages change
   useEffect(() => {
-    setMessages(initialMessages);
+    if (initialMessages.length > 0) {
+      setMessages(initialMessages);
+    }
   }, [initialMessages]);
+  
+  // Update processing state from props
+  useEffect(() => {
+    setIsProcessing(externalProcessing);
+  }, [externalProcessing]);
   
   const handleSendMessage = (content: string) => {
     // Create a new message
@@ -42,8 +96,18 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     // Update messages state locally for immediate feedback
     setMessages(prev => [...prev, newMessage]);
     
-    // Call the parent handler to process the message
-    onSendMessage(content);
+    // Show processing indicator
+    setIsProcessing(true);
+    
+    // Send message through WebSocket if available
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify(newMessage));
+    }
+    
+    // Also call the parent handler if provided (for backward compatibility)
+    if (onSendMessage) {
+      onSendMessage(content);
+    }
   };
   
   return (
