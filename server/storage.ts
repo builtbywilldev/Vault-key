@@ -3,35 +3,31 @@ import {
   users, 
   storedPasswords,
   type User, 
-  type InsertUser,
+  type UpsertUser,
   type StoredPassword,
   type InsertStoredPassword,
   type UpdateStoredPassword
 } from "@shared/schema";
 import { eq, and, asc, desc } from "drizzle-orm";
-import crypto from "crypto";
-import bcrypt from "bcrypt";
 
 export interface IStorage {
   // User operations
-  getUser(id: number): Promise<User | undefined>;
+  getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
-  getUserByEmail(email: string): Promise<User | undefined>;
-  getUserByApiKey(apiKey: string): Promise<User | undefined>;
-  createUser(userData: { email: string; username: string; password: string }): Promise<User>;
-  validateUserPassword(email: string, password: string): Promise<User | null>;
+  getUserByEmail(email: string | null | undefined): Promise<User | undefined>;
+  upsertUser(userData: UpsertUser): Promise<User>;
   
   // Stored password operations
   getStoredPassword(id: number): Promise<StoredPassword | undefined>;
-  getStoredPasswordsByUser(userId: number): Promise<StoredPassword[]>;
-  createStoredPassword(userId: number, passwordData: InsertStoredPassword): Promise<StoredPassword>;
-  updateStoredPassword(id: number, userId: number, passwordData: UpdateStoredPassword): Promise<StoredPassword | null>;
-  deleteStoredPassword(id: number, userId: number): Promise<boolean>;
+  getStoredPasswordsByUser(userId: string): Promise<StoredPassword[]>;
+  createStoredPassword(userId: string, passwordData: InsertStoredPassword): Promise<StoredPassword>;
+  updateStoredPassword(id: number, userId: string, passwordData: UpdateStoredPassword): Promise<StoredPassword | null>;
+  deleteStoredPassword(id: number, userId: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
-  // User operations
-  async getUser(id: number): Promise<User | undefined> {
+  // User operations for Replit Auth
+  async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
@@ -41,49 +37,24 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async getUserByEmail(email: string): Promise<User | undefined> {
+  async getUserByEmail(email: string | null | undefined): Promise<User | undefined> {
+    if (!email) return undefined;
     const [user] = await db.select().from(users).where(eq(users.email, email));
     return user;
   }
-
-  async getUserByApiKey(apiKey: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.apiKey, apiKey));
-    return user;
-  }
-
-  async createUser(userData: { email: string; username: string; password: string }): Promise<User> {
-    // Generate a unique API key for the user
-    const apiKey = crypto.randomBytes(32).toString('hex');
-    
-    // Hash the password
-    const passwordHash = await bcrypt.hash(userData.password, 10);
-    
+  
+  async upsertUser(userData: UpsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
-      .values({
-        email: userData.email,
-        username: userData.username,
-        passwordHash,
-        apiKey
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
       })
       .returning();
-    
-    return user;
-  }
-
-  async validateUserPassword(email: string, password: string): Promise<User | null> {
-    const user = await this.getUserByEmail(email);
-    
-    if (!user) {
-      return null;
-    }
-    
-    const isValidPassword = await bcrypt.compare(password, user.passwordHash);
-    
-    if (!isValidPassword) {
-      return null;
-    }
-    
     return user;
   }
 
@@ -97,7 +68,7 @@ export class DatabaseStorage implements IStorage {
     return storedPassword;
   }
 
-  async getStoredPasswordsByUser(userId: number): Promise<StoredPassword[]> {
+  async getStoredPasswordsByUser(userId: string): Promise<StoredPassword[]> {
     return db
       .select()
       .from(storedPasswords)
@@ -105,20 +76,19 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(storedPasswords.updatedAt));
   }
 
-  async createStoredPassword(userId: number, passwordData: InsertStoredPassword): Promise<StoredPassword> {
+  async createStoredPassword(userId: string, passwordData: InsertStoredPassword): Promise<StoredPassword> {
     const [storedPassword] = await db
       .insert(storedPasswords)
       .values({
         ...passwordData,
         userId,
-        updatedAt: new Date()
       })
       .returning();
     
     return storedPassword;
   }
 
-  async updateStoredPassword(id: number, userId: number, passwordData: UpdateStoredPassword): Promise<StoredPassword | null> {
+  async updateStoredPassword(id: number, userId: string, passwordData: UpdateStoredPassword): Promise<StoredPassword | null> {
     const [updatedPassword] = await db
       .update(storedPasswords)
       .set({
@@ -136,7 +106,7 @@ export class DatabaseStorage implements IStorage {
     return updatedPassword || null;
   }
 
-  async deleteStoredPassword(id: number, userId: number): Promise<boolean> {
+  async deleteStoredPassword(id: number, userId: string): Promise<boolean> {
     const result = await db
       .delete(storedPasswords)
       .where(

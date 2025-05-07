@@ -155,7 +155,7 @@ export type ChatMessage = typeof chatMessages.$inferSelect;
 // Morpheus Agents
 export const agents = pgTable("agents", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   name: varchar("name", { length: 100 }).notNull(),
   description: text("description"),
   status: varchar("status", { length: 20 }).notNull().default("idle"), // 'idle', 'active', 'paused', 'error'
