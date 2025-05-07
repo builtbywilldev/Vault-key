@@ -50,6 +50,9 @@
   --sidebar-border: 240 15% 20%;  /* #252535 - Borders */
   --sidebar-ring: 0 0% 100%;      /* #ffffff - White */
   
+  /* Viewport height variable for mobile keyboard adjustments */
+  --viewport-height: 100vh;
+  
   /* Morpheus specific variables */
   --morpheus-user-msg: 250 100% 62%;    /* #5d3eff - Blue */
   --morpheus-assistant-msg: 263 70% 52%; /* #7342d6 - Dark purple */
@@ -122,7 +125,7 @@
 .morpheus-layout {
   display: grid;
   grid-template-rows: auto 1fr;
-  height: 100vh;
+  height: var(--viewport-height, 100vh);
 }
 
 .morpheus-tabs {
@@ -199,6 +202,11 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  position: fixed;
+  top: 48px; /* Height of the tab navigation */
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .morpheus-messages {
@@ -209,9 +217,12 @@
   flex-direction: column;
   gap: 1rem;
   -webkit-overflow-scrolling: touch;
-  height: auto;
-  max-height: calc(100vh - 130px); /* Prevent scrolling beyond content */
   overscroll-behavior: contain; /* Prevent scroll chaining */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 130px; /* Height of input container */
 }
 
 .morpheus-message {
@@ -231,15 +242,27 @@
   }
 }
 
+/* Mobile specific styling */
 @media (max-width: 639px) {
-  .morpheus-messages {
-    max-height: calc(100vh - 145px); /* Additional space for mobile keyboard */
+  /* Fix for iOS mobile keyboard issues */
+  html, body {
+    height: 100%;
+    position: fixed;
+    overflow: hidden;
+    width: 100%;
   }
   
-  .morpheus-messages.keyboard-open {
-    max-height: calc(100vh - 300px); /* Further reduced height when keyboard is open */
-    overflow: visible;
-    overscroll-behavior: none;
+  /* More compact sizing for mobile input */
+  .morpheus-chat-input-container {
+    padding: 0.75rem;
+  }
+  
+  .morpheus-chat-textarea {
+    max-height: 80px;
+  }
+  
+  .morpheus-message {
+    max-width: 90%;
   }
 }
 
@@ -301,6 +324,11 @@
   padding: 1rem;
   background-color: hsl(var(--card));
   border-top: 1px solid hsl(var(--border));
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
 }
 
 .morpheus-chat-input-wrapper {

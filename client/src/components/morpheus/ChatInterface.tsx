@@ -63,26 +63,28 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     };
   }, []);
   
-  // Detect virtual keyboard on mobile
+  // Mobile viewport adjustments to handle keyboard visibility
   useEffect(() => {
-    const detectKeyboard = () => {
-      // This helps determine if keyboard is likely shown on mobile
-      const isMobile = window.innerWidth < 640;
-      const isKeyboardOpen = isMobile && window.innerHeight < window.outerHeight * 0.75;
-      
-      // Apply a class to the container to adjust styles when keyboard is shown
-      const messagesContainer = document.querySelector('.morpheus-messages');
-      if (messagesContainer) {
-        if (isKeyboardOpen) {
-          messagesContainer.classList.add('keyboard-open');
-        } else {
-          messagesContainer.classList.remove('keyboard-open');
-        }
-      }
+    const handleResize = () => {
+      // Apply any window-specific adjustments if needed
+      const viewportHeight = window.visualViewport?.height || window.innerHeight;
+      document.documentElement.style.setProperty('--viewport-height', `${viewportHeight}px`);
     };
-
-    window.addEventListener('resize', detectKeyboard);
-    return () => window.removeEventListener('resize', detectKeyboard);
+    
+    // Use visualViewport API if available (better for mobile keyboards)
+    if (window.visualViewport) {
+      const visualViewport = window.visualViewport;
+      visualViewport.addEventListener('resize', handleResize);
+      handleResize(); // Initial call
+      
+      return () => visualViewport.removeEventListener('resize', handleResize);
+    } else {
+      // Fallback to regular window resize
+      window.addEventListener('resize', handleResize);
+      handleResize(); // Initial call
+      
+      return () => window.removeEventListener('resize', handleResize);
+    }
   }, []);
   
   // Scroll to bottom when messages change
